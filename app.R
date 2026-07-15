@@ -68,6 +68,12 @@ df_gnomAD <- read.csv(
   stringsAsFactors = FALSE
 )
 
+df_human_to_mouse <- read.csv(
+  "data/df_collapsed_human_to_mouse_genes.csv",
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
 df_table <- read.csv(
   "data/df_collapsed_stringified.csv",
   check.names = FALSE,
@@ -353,6 +359,7 @@ server <- function(input, output, session) {
     )
   })
 
+  # Species-specific Gene Table
   output$clusterTable <- DT::renderDataTable({
     df_table <- df_table %>%
       mutate(
@@ -361,6 +368,14 @@ server <- function(input, output, session) {
           `gene_id`,
           "?dataset=gnomad_r4"
         )
+      )
+    
+    # Add mouse gene names
+    df_table <- df_table %>%
+      mutate(
+        mouse_gene = df_human_to_mouse$Mouse_gene_name[
+          match(gene, df_human_to_mouse$Human_gene_name)
+        ]
       )
 
     df_table <- df_table %>%
@@ -391,6 +406,7 @@ server <- function(input, output, session) {
         `Gene` = gene,
         `Species with a KRAB-ZFP Cluster Associated with Gene` = num_species_w_cluster_associated_with_gene,
         `Percent Conserved - All Species` = percent_conserved,
+        `Mouse Gene` = mouse_gene,
         `Gene ID` = gene_id,
         `pLI` = pLI,
         `o/e` = oe,
@@ -425,6 +441,7 @@ server <- function(input, output, session) {
       "<img src='gene_icon.jpg' height='20'> Gene",
       "Species with a KRAB-ZFP Cluster Associated with Gene",
       "Percent of Species with Cluster Ortholog",
+      "Mouse Gene",
       "Gene ID",
       "<img src='gnomAD.svg' height='20'> pLI",
       "<img src='gnomAD.svg' height='20'> o/e",
@@ -474,20 +491,22 @@ server <- function(input, output, session) {
           list(className = 'dt-center', width = '140px', targets = 1),
           # Percent Conserved - All Species
           list(className = 'dt-center', width = '110px', targets = 2),
+          # Mouse Gene
+          list(className = 'dt-center', width = '80px',  targets = 3),
           # Gene ID
-          list(className = 'dt-center', width = '110px', targets = 3),
+          list(className = 'dt-center', width = '110px', targets = 4),
           # pLI
-          list(className = 'dt-center', width = '60px',  targets = 4),
-          # o/e
           list(className = 'dt-center', width = '60px',  targets = 5),
+          # o/e
+          list(className = 'dt-center', width = '60px',  targets = 6),
           # GnomAD Link
-          list(className = 'dt-center', width = '140px', targets = 6),
-          # MGI Link
           list(className = 'dt-center', width = '140px', targets = 7),
-          # IMPC Link
+          # MGI Link
           list(className = 'dt-center', width = '140px', targets = 8),
+          # IMPC Link
+          list(className = 'dt-center', width = '140px', targets = 9),
           # Clusters Associated with Gene
-          list(className = 'dt-center', width = '260px', targets = 9)
+          list(className = 'dt-center', width = '260px', targets = 10)
         )
       )
     )
