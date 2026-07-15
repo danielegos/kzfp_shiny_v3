@@ -1,4 +1,4 @@
-# 5-14-26 Update
+# 7-15-26 Update
 
 # TODO: Edit gene table so Zfp gene names appear in search
 
@@ -137,7 +137,7 @@ ui = tagList(
                  # ---------------------------------------------------
                  tabPanel(
                    title = "Conservation Plot",
-                   # Add checkbox option for "Compact Plot" mode <----------------
+                   # Add checkbox option for "Compact Plot" mode
                    checkboxInput("show_compact_clustFig", "Show condensed plot (uncheck to show full)", value = FALSE),
                    # include text legend here color: violetred4
 
@@ -166,7 +166,7 @@ ui = tagList(
 
                    fluidRow(
                      column(
-                       width = 12,    # left side (e.g., plot)
+                       width = 12,
                        uiOutput("dynamicClusterTableUI")
                      )
                    )
@@ -223,21 +223,8 @@ ui = tagList(
                  )
                ),
              )
-             ),
-    # tabPanel("Navbar 3", "This panel is intentionally left blank")
+           ),
   ),
-
-  # tags$style(HTML("
-  #   #combinedPlot .ytick text,
-  #   #combinedPlot .xtick text,
-  #   #combinedPlot .textpoint {
-  #     user-select: text !important;
-  #     -webkit-user-select: text !important;
-  #     -moz-user-select: text !important;
-  #     -ms-user-select: text !important;
-  #     pointer-events: auto !important;
-  #   }
-  # ")),
 
   tags$style(HTML("
     #labelPlot .ytick text,
@@ -353,19 +340,12 @@ server <- function(input, output, session) {
     tags$img(
       src = paste0(input$selected_species, ".png"),  # file inside www/
       style = "width: 100%; height: auto;",
-      # height = "250px",
       style = "display: block; margin: 10px auto;"
     )
   })
 
   # Dynamic UI for species table height
   output$dynamicClusterTableUI <- renderUI({
-    # df <- filtered_species_data()
-    # validate(
-    #   need(!is.null(df), "No data available for selected species.")
-    # )
-    #
-    # n_rows <- nrow(df)
     table_height <- 700  # 20px per row, min 200px
     div(
       style = paste0("height:", table_height, "px; overflow-y:auto;"),
@@ -478,13 +458,11 @@ server <- function(input, output, session) {
     # --- Display as a datatable ---
     DT::datatable(
       df_filtered,
-
-
       escape = FALSE,
       rownames = FALSE,
       options = list(
         scrollY = TRUE,
-        scrollX = TRUE,             # helpful if table gets wide
+        scrollX = TRUE,            
         pageLength = n_rows,
         autoWidth = TRUE,
         dom = 'fTip',
@@ -592,48 +570,6 @@ server <- function(input, output, session) {
     plot_height  <- if (compact_mode) 500 else 1100*(nrows_labels_df**(1/3))
 
     fig1_text  <- if (compact_mode) "" else ~Label_text
-
-    # -------- LEFT PLOT: "one-column table" of Gene names --------
-    # fig1 <- plot_ly(
-    #   data = labels_df,
-    #   x = ~0,                  # dummy x
-    #   y = ~Label,              # keep Label for shared Y alignment
-    #   type = "scatter",
-    #   mode = "text",
-    #   text = fig1_text,      # << show Gene names here
-    #   textposition = "middle right",
-    #   # info_text = ~paste(
-    #   #   "test hover"
-    #   # ),
-    #   # hoverinfo = "info_text",
-    # 
-    #   hoverinfo = "none",
-    #   cliponaxis = FALSE
-    # 
-    # ) %>%
-    #   layout(
-    #     xaxis = list(
-    #       showgrid = FALSE,
-    #       showticklabels = FALSE,
-    #       zeroline = FALSE,
-    #       title = "",
-    #       range=c(-0.1,1)
-    #     ),
-    #     yaxis = list(
-    #       range = c(0, length(label_levels) + 0),
-    #       showgrid = FALSE,
-    # 
-    # 
-    #       # title = "KZFP Clusters and Associated Genes",
-    #       tickfont = list(size = 10),
-    #       title="",
-    #       ticks="",
-    #       automargin = TRUE,
-    #       categoryorder = "array",
-    #       categoryarray = label_levels
-    #     ),
-    #     margin = list(l = 150, r = 5, b = 0, t = 0)
-    #   )
     
     fig1 <- plot_ly(
       data = labels_long,
@@ -742,19 +678,6 @@ server <- function(input, output, session) {
         margin = list(t = 0, b = 0, l = 0, r = 0),
         paper_bgcolor = "rgba(255,255,255,1)",
         plot_bgcolor  = "rgba(255,255,255,1)"
-        # annotations = list(
-        #   list(
-        #     text = "",
-        #     x = 0,              # far left
-        #     y = 1,              # very top of plotting area
-        #     xref = "paper",
-        #     yref = "paper",
-        #     showarrow = FALSE,
-        #     textangle = 0,      # horizontal
-        #     xanchor = "left",
-        #     yanchor = "bottom"  # anchor text ABOVE this point
-        #   )
-        # )
       )
 
     fig4 <- plot_ly() %>%
@@ -897,7 +820,6 @@ server <- function(input, output, session) {
 
     df_sorted
   })
-
 
   output$labelPlot <- renderPlotly({
     # attempt to adapt combinedPlot here
@@ -1059,19 +981,6 @@ server <- function(input, output, session) {
         margin = list(t = 0, b = 0, l = 0, r = 0),
         paper_bgcolor = "rgba(255,255,255,1)",
         plot_bgcolor  = "rgba(255,255,255,1)"
-        # annotations = list(
-        #   list(
-        #     text = "",
-        #     x = 0,              # far left
-        #     y = 1,              # very top of plotting area
-        #     xref = "paper",
-        #     yref = "paper",
-        #     showarrow = FALSE,
-        #     textangle = 0,      # horizontal
-        #     xanchor = "left",
-        #     yanchor = "bottom"  # anchor text ABOVE this point
-        #   )
-        # )
       )
 
     fig4 <- plot_ly() %>%
@@ -1098,8 +1007,8 @@ server <- function(input, output, session) {
       fig2,
       nrows  = 2,
       shareY = TRUE,          # y-axes aligned
-      heights = c(0.2, 0.8),    # 75% height for row 1, 25% for row 2
-      widths = c(0.2, 0.8), # adjust relative widths
+      heights = c(0.2, 0.8),   
+      widths = c(0.2, 0.8), 
       margin = 0.00
       # config(displayModeBar = TRUE)
 
