@@ -1,4 +1,4 @@
-# 09-02-26 Update
+# 09-17-26 Update
 
 # TODO: Edit gene table so Zfp gene names appear in search
 
@@ -117,7 +117,7 @@ ui = tagList(
                selectizeInput(
                  "selected_species",
                  "Select or type species name or common name:",
-                 selected = "Mus musculus",
+                 selected = "Homo sapiens",
                  choices = setNames(species_choices$Species, species_choices$label),
                  multiple = FALSE,
                  options = list(
